@@ -6,8 +6,7 @@
 import * as THREE from 'three';
 import WebGL from 'three/addons/capabilities/WebGL.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { make_many_suns, make_moon, make_planets, make_sun } from './services';
-import { TextureLoader } from 'three';
+import { make_many_suns, make_planets, make_sun, make_basic_planet } from './services';
 
 const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer();
@@ -19,9 +18,12 @@ document.body.appendChild(renderer.domElement);
 // objects
 // --------------------------------------------------------------------
 
-// many cube
-const data = make_planets(scene, 10, 0x0077be, -10, 10);
+// earth 
+const data = make_planets(scene, 1, 0x0077be, -10, 10);
 const { planets, planetData } = data;
+
+// jupiter
+const jupiter = make_basic_planet(scene, '8k_jupiter.jpg', -10, 10);
 
 // many suns
 make_many_suns(scene, 1000, 0xffffff, -500, 500);
@@ -58,7 +60,7 @@ function animate() {
     planets.forEach((planet, index) => {
         const data = planetData[index];
         const moon = data.moon;
-        
+
         const speed = data.speed;
         const time = Date.now() * speed;
         // Update theta for each planet to rotate it
@@ -67,12 +69,26 @@ function animate() {
         planet.position.y = data.radius * Math.sin(data.phi) * Math.sin(theta);
         planet.position.z = data.radius * Math.cos(data.phi);
 
-        moon.position.x = planet.position.x + 1;
-        moon.position.y = planet.position.y + 1;
-        moon.position.z = planet.position.z + 1;
+        // Update moon position
+        const moonSpeed = data.moonSpeed;
+        const moonTime = Date.now() * moonSpeed;
+        const moonTheta = data.moonTheta + moonTime * 0.1;
+        const moonOrbitRadius = data.moonOrbitRadius; // Define the orbit radius of the moon
+
+        moon.position.x = planet.position.x + moonOrbitRadius * Math.cos(moonTheta);
+        moon.position.y = planet.position.y + moonOrbitRadius * Math.sin(moonTheta);
 
         planet.rotation.y += 0.005;
     });
+
+    // orbit jupiter
+    const jupiterSpeed = jupiter.planetData[0].speed;
+    const jupiterTime = Date.now() * jupiterSpeed;
+    const jupiterTheta = jupiter.planetData[0].theta + jupiterTime * 0.1;
+    jupiter.planet.position.x = jupiter.planetData[0].radius * Math.sin(jupiter.planetData[0].phi) * Math.cos(jupiterTheta);
+    jupiter.planet.position.y = jupiter.planetData[0].radius * Math.sin(jupiter.planetData[0].phi) * Math.sin(jupiterTheta);
+    jupiter.planet.position.z = jupiter.planetData[0].radius * Math.cos(jupiter.planetData[0].phi);
+
 
     renderer.render(scene, camera);
 }

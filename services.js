@@ -58,15 +58,48 @@ export const make_planets = (scene, nums, color, min, max) => {
         const theta = Math.atan2(planet.position.y, planet.position.x);
         const phi = Math.acos(planet.position.z / radius);
         const speed = (1 / radius) * 0.001;
-        planetData.push({ radius, theta, phi, speed, moon });
+
+        const moonSpeed = (1 / radius) * 0.001;
+        const moonTheta = Math.atan2(moon.position.y, moon.position.x);
+        const moonOrbitRadius = 1;
+
+        planetData.push({ radius, theta, phi, speed, moon, moonSpeed, moonTheta, moonOrbitRadius });
     }
 
     return { planets, planetData };
 }
 
+export const make_basic_planet = (scene, map, min, max) => {
+    const planetData = [];
+    const loader = new TextureLoader();
+    const planetTexture = loader.load('8k_jupiter.jpg')
+
+    const geometry = new THREE.SphereGeometry(Math.random());
+    const material = new THREE.MeshPhysicalMaterial({
+        // map: planetTexture,
+        // You can add more material properties like roughness, metalness, etc.
+        map: planetTexture,
+    });
+    let planet = new THREE.Mesh(geometry, material);
+    planet = _randomiser(planet, min, max);
+    scene.add(planet);
+
+    // Calculate radius and initial angle for the orbit
+    const radius = planet.position.length();
+    const theta = Math.atan2(planet.position.y, planet.position.x);
+    const phi = Math.acos(planet.position.z / radius);
+    const speed = (1 / radius) * 0.001;
+    
+    planetData.push({ radius, theta, phi, speed });
+    return { planet, planetData };
+}
+
 export const make_moon = (scene, planet) => {
+    const loader = new TextureLoader();
+    const planetTexture = loader.load('2k_moon.jpg')
+
     const geometry = new THREE.SphereGeometry(0.2, 32, 32);
-    const material = new THREE.MeshPhysicalMaterial({ color: 0x888888 });
+    const material = new THREE.MeshPhysicalMaterial({ map: planetTexture });
     const sphere = new THREE.Mesh(geometry, material);
     sphere.position.x = planet.position.x + 0.1;
     sphere.position.y = planet.position.y + 0.1;
