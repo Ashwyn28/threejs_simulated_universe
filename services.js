@@ -120,7 +120,7 @@ const _randomiser = (object, min, max) => {
 
 const _lightup = (scene, object) => {
     // Point Light
-    const pointLight = new THREE.PointLight(0xffffff, 100, 100);
+    const pointLight = new THREE.PointLight(0xffffff, 10000, 10000);
     pointLight.position.set(object.position.x, object.position.y, object.position.z); // Position the light at the center of the sphere
     scene.add(pointLight);
 }

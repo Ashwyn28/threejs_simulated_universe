@@ -19,11 +19,11 @@ document.body.appendChild(renderer.domElement);
 // --------------------------------------------------------------------
 
 // earth 
-const data = make_planets(scene, 100, 0x0077be, -120, 120);
+const data = make_planets(scene, 100, 0x0077be, -110, 110);
 const { planets, planetData } = data;
 
 // jupiter
-const jupiter = make_basic_planet(scene, '8k_jupiter.jpg', -110, 110);
+const jupiter = make_basic_planet(scene, '8k_jupiter.jpg', -10, 10);
 
 // many suns
 make_many_suns(scene, 1000, 0xffffff, -500, 500);
@@ -89,7 +89,6 @@ function animate() {
     jupiter.planet.position.y = jupiter.planetData[0].radius * Math.sin(jupiter.planetData[0].phi) * Math.sin(jupiterTheta);
     jupiter.planet.position.z = jupiter.planetData[0].radius * Math.cos(jupiter.planetData[0].phi);
 
-
     renderer.render(scene, camera);
 }
 if (WebGL.isWebGLAvailable()) {
@@ -103,3 +102,31 @@ if (WebGL.isWebGLAvailable()) {
 
 
 
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+function onMouseClick(event) {
+
+    // Calculate mouse position in normalized device coordinates
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    // Update the raycaster with the camera and mouse position
+    raycaster.setFromCamera(mouse, camera);
+
+    // Calculate objects intersected by the raycaster
+    const intersects = raycaster.intersectObjects(planets.map(p => p));
+
+    if (intersects.length > 0) {
+        // Focus on the first intersected object (the closest one)
+        const targetPlanet = intersects[0].object;
+
+        // Update camera position and controls target
+        // You might need to adjust these values
+        camera.position.set(targetPlanet.position.x, targetPlanet.position.y, targetPlanet.position.z + 50);
+        controls.target.set(targetPlanet.position.x, targetPlanet.position.y, targetPlanet.position.z);
+    }
+}
+
+// Add the event listener
+window.addEventListener('click', onMouseClick, false);
