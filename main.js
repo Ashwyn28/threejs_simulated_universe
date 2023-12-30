@@ -19,11 +19,11 @@ document.body.appendChild(renderer.domElement);
 // --------------------------------------------------------------------
 
 // earth 
-const data = make_planets(scene, 1, 0x0077be, -10, 10);
+const data = make_planets(scene, 100, 0x0077be, -120, 120);
 const { planets, planetData } = data;
 
 // jupiter
-const jupiter = make_basic_planet(scene, '8k_jupiter.jpg', -10, 10);
+const jupiter = make_basic_planet(scene, '8k_jupiter.jpg', -110, 110);
 
 // many suns
 make_many_suns(scene, 1000, 0xffffff, -500, 500);

@@ -5,7 +5,7 @@ import { TextureLoader } from 'three';
 export const make_sun = (scene) => {
     const loader = new TextureLoader();
     const texture = loader.load('8k_sun.jpg')
-    const geometry = new THREE.SphereGeometry(1, 32, 32);
+    const geometry = new THREE.SphereGeometry(100, 32, 32);
     const material = new THREE.MeshBasicMaterial({ map: texture });
     const sphere = new THREE.Mesh(geometry, material);
     sphere.position.x = 0;
@@ -89,7 +89,7 @@ export const make_basic_planet = (scene, map, min, max) => {
     const theta = Math.atan2(planet.position.y, planet.position.x);
     const phi = Math.acos(planet.position.z / radius);
     const speed = (1 / radius) * 0.001;
-    
+
     planetData.push({ radius, theta, phi, speed });
     return { planet, planetData };
 }
