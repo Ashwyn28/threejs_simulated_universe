@@ -6,7 +6,7 @@
 import * as THREE from 'three';
 import WebGL from 'three/addons/capabilities/WebGL.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { make_many_suns, make_planets, make_sun, make_basic_planet } from './services';
+import { make_many_suns, make_planets, make_sun, make_basic_planet, make_spaceship } from './services';
 
 const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer();
@@ -31,6 +31,9 @@ make_many_suns(scene, 1000, 0xffffff, -500, 500);
 // sun
 make_sun(scene);
 
+// space ship
+const spaceship = make_spaceship(scene);
+const objects = [...planets, jupiter.planet, spaceship];
 
 // -------------------------------------------------------------------- 
 // light and cmamera
@@ -38,7 +41,7 @@ make_sun(scene);
 
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.y = 42;
+camera.position.y = 420;
 
 // Setup OrbitControls
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -114,12 +117,15 @@ function onMouseClick(event) {
     // Update the raycaster with the camera and mouse position
     raycaster.setFromCamera(mouse, camera);
 
+    console.log(objects);
     // Calculate objects intersected by the raycaster
-    const intersects = raycaster.intersectObjects(planets.map(p => p));
+    const intersects = raycaster.intersectObjects(objects.map(p => p));
+    console.log(intersects);
 
     if (intersects.length > 0) {
         // Focus on the first intersected object (the closest one)
         const targetPlanet = intersects[0].object;
+        console.log(targetPlanet)
 
         // Update camera position and controls target
         // You might need to adjust these values

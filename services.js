@@ -1,6 +1,33 @@
 import * as THREE from 'three';
 import { TextureLoader } from 'three';
 
+export const make_spaceship = (scene) => {
+    // Spaceship parts
+    const bodyGeometry = new THREE.CylinderGeometry(0.2, 1, 4, 32);
+    const wingGeometry = new THREE.BoxGeometry(1, 0.1, 3);
+    const cockpitGeometry = new THREE.SphereGeometry(0.8, 32, 32);
+
+    const material = new THREE.MeshNormalMaterial(); // Multi-color material for visibility
+
+    const body = new THREE.Mesh(bodyGeometry, material);
+    const wing1 = new THREE.Mesh(wingGeometry, material);
+    const wing2 = new THREE.Mesh(wingGeometry, material);
+    const cockpit = new THREE.Mesh(cockpitGeometry, material);
+
+    // Grouping
+    const spaceship = new THREE.Group();
+    spaceship.add(body);
+    spaceship.add(wing1);
+    spaceship.add(wing2);
+    spaceship.add(cockpit);
+
+    spaceship.position.x = 110;
+    spaceship.position.y = 110;
+    spaceship.position.z = 110;
+    scene.add(spaceship);
+
+    return spaceship;
+}
 
 export const make_sun = (scene) => {
     const loader = new TextureLoader();
